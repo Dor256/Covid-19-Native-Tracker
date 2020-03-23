@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, NativeSyntheticEvent, TextInputChangeEventData, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, NativeSyntheticEvent, TextInputChangeEventData, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { Header } from './Header';
 import { ColoredStatusBar } from './ColoredStatusBar';
@@ -42,9 +42,11 @@ export class App extends React.Component<{}, AppState> {
   }
 
   handleSearch = async () => {
+    const { search } = this.state;
     this.setState({ covidData: undefined });
-    const covidData = await coronaApi.getCasesByCountry(this.state.search);
+    const covidData = search === '' ? await coronaApi.getAllCases() : await coronaApi.getCasesByCountry(search);
     this.setState({ covidData });
+    Keyboard.dismiss();
   }
 
   render() {
@@ -56,7 +58,10 @@ export class App extends React.Component<{}, AppState> {
           <KeyboardAvoidingView behavior="position">
             <ScrollView
               contentInsetAdjustmentBehavior="automatic"
-              style={styles.scrollView}>
+              style={styles.scrollView}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="interactive"
+            >
               <View style={styles.body}>
                 <Header />
                 <View style={styles.container}>
