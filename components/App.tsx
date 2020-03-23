@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, NativeSyntheticEvent, TextInputChangeEventData, KeyboardAvoidingView } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { Header } from './Header';
 import { ColoredStatusBar } from './ColoredStatusBar';
@@ -52,26 +52,23 @@ export class App extends React.Component<{}, AppState> {
     return (
       <>
       	<ColoredStatusBar backgroundColor={ThemeColors.COVID} />
-        <SafeAreaView>
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
-            {global.HermesInternal == null ? null : (
-              <View style={styles.engine}>
-                <Text style={styles.footer}>Engine: Hermes</Text>
+        <SafeAreaView >
+          <KeyboardAvoidingView behavior="position">
+            <ScrollView
+              contentInsetAdjustmentBehavior="automatic"
+              style={styles.scrollView}>
+              <View style={styles.body}>
+                <Header />
+                <View style={styles.container}>
+                  <CovidContent covidData={covidData} />
+                  <TextInput placeholder="Search country..." style={styles.search} onChange={this.handleChange} />
+                  <TouchableOpacity style={styles.button} onPress={this.handleSearch}>
+                    <Text style={styles.buttonText}>Search</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            )}
-            <View style={styles.body}>
-              <Header />
-              <View style={styles.container}>
-                <CovidContent covidData={covidData} />
-                <TextInput placeholder="Search country..." style={styles.search} onChange={this.handleChange} />
-                <TouchableOpacity style={styles.button} onPress={this.handleSearch}>
-                  <Text style={styles.buttonText}>Search</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </SafeAreaView>
       </>
     );
@@ -81,10 +78,6 @@ export class App extends React.Component<{}, AppState> {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter
-  },
-  engine: {
-    position: 'absolute',
-    right: 0
   },
   body: {
     backgroundColor: Colors.white
