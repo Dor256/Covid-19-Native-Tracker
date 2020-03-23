@@ -66,7 +66,12 @@ export class App extends React.Component<{}, AppState> {
                 <Header />
                 <View style={styles.container}>
                   <CovidContent covidData={covidData} />
-                  <TextInput placeholder="Search country..." style={styles.search} onChange={this.handleChange} />
+                  <TextInput
+                    placeholderTextColor={ThemeColors.PLACEHOLDER_TEXT}
+                    placeholder="Search country..."
+                    style={styles.search}
+                    onChange={this.handleChange}
+                  />
                   <TouchableOpacity style={styles.button} onPress={this.handleSearch}>
                     <Text style={styles.buttonText}>Search</Text>
                   </TouchableOpacity>
@@ -135,6 +140,7 @@ const styles = StyleSheet.create({
     borderColor: ThemeColors.COVID,
     padding: 10,
     borderRadius: 50,
-    marginTop: 30
+    marginTop: 30,
+    color: 'black'
   }
 });
