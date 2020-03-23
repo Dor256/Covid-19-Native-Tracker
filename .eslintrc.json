@@ -2,12 +2,14 @@
   "root": true,
   "extends": "@react-native-community",
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "class-property"],
   "rules": {
     "comma-dangle": "off",
-    "block-spacing": "warn",
+    "space-before-blocks": "warn",
     "eol-last": "off",
     "prettier/prettier": 0,
-    "no-mixed-spaces-and-tabs": "off"
+    "no-mixed-spaces-and-tabs": "off",
+    "semi": "warn",
+    "object-curly-spacing": ["warn", "always"]
   }
 }
