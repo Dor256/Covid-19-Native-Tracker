@@ -2,6 +2,7 @@ import React from 'react';
 import { ByCountryResponse, TotalResponse } from 'api';
 import { Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { ThemeColors } from './Themes';
+import { formatNumberWithCommas } from '../utils';
 
 export type ContentProps = {
   covidData?: ByCountryResponse | TotalResponse;
@@ -18,31 +19,31 @@ function renderCovidData(covidData: ByCountryResponse | TotalResponse) {
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>All Cases: </Text>
-            {covidData.cases}
+            {formatNumberWithCommas(covidData.cases)}
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>New Cases: </Text>
-            {covidData.todayCases}
+            {formatNumberWithCommas(covidData.todayCases)}
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>Active Cases: </Text>
-            {covidData.active}
+            {formatNumberWithCommas(covidData.active)}
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>Recoveries: </Text>
-            {covidData.recovered}
+            {formatNumberWithCommas(covidData.recovered)}
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>All Deaths: </Text>
-            {covidData.deaths}
+            {formatNumberWithCommas(covidData.deaths)}
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>New Deaths: </Text>
-            {covidData.todayDeaths}
+            {formatNumberWithCommas(covidData.todayDeaths)}
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>Critical Cases: </Text>
-            {covidData.critical}
+            {formatNumberWithCommas(covidData.critical)}
           </Text>
         </>
       );
@@ -51,15 +52,15 @@ function renderCovidData(covidData: ByCountryResponse | TotalResponse) {
         <>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>Total Cases: </Text>
-            {covidData.cases}
+            {formatNumberWithCommas(covidData.cases)}
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>Total Deaths: </Text>
-            {covidData.deaths}
+            {formatNumberWithCommas(covidData.deaths)}
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>Total Recoveries: </Text>
-            {covidData.recovered}
+            {formatNumberWithCommas(covidData.recovered)}
           </Text>
           <Text style={styles.textContainer}>
             <Text style={styles.bold}>Last Updated: </Text>
