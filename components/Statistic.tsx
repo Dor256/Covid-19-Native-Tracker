@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { formatNumberWithCommas, calculatePercent } from '../utils';
 import { ThemeColors } from './Themes';
 
-export type StatisticType = 'cases' | 'recovered' | 'deaths'; 
+export type StatisticType = 'cases' | 'recovered' | 'deaths';
 
 export type StatisticProps = {
   type: StatisticType,
@@ -16,7 +16,7 @@ const ThemeType: Record<StatisticType, ThemeColors> = {
   'cases': ThemeColors.CASES,
   'recovered': ThemeColors.RECOVERY,
   'deaths': ThemeColors.DEATHS
-}
+};
 
 function renderStatistics(props: StatisticProps) {
   switch (props.type) {

@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, TextInput, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { Header } from './Header';
 import { ColoredStatusBar } from './ColoredStatusBar';
@@ -79,9 +79,6 @@ export class App extends React.Component<{}, AppState> {
                     style={styles.search}
                     onChangeText={this.handleChange}
                   />
-                  {/* <TouchableOpacity style={styles.button} onPress={this.handleSearch}>
-                    <Text style={styles.buttonText}>Search</Text>
-                  </TouchableOpacity> */}
                 </View>
                 <View style={styles.container}>
                   <CovidContent covidData={covidData} />

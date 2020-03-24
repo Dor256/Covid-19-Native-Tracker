@@ -2,7 +2,7 @@
   "root": true,
   "extends": "@react-native-community",
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "class-property"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "comma-dangle": "off",
     "space-before-blocks": "warn",
@@ -10,6 +10,7 @@
     "prettier/prettier": 0,
     "no-mixed-spaces-and-tabs": "off",
     "semi": "warn",
-    "object-curly-spacing": ["warn", "always"]
+    "object-curly-spacing": ["warn", "always"],
+    "react-native/no-inline-styles": "off"
   }
 }
