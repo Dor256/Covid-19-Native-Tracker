@@ -1,73 +1,46 @@
 import React from 'react';
-import { ByCountryResponse, TotalResponse } from 'api';
-import { Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { CovidResponse } from 'api';
+import { Text, ActivityIndicator, StyleSheet, Image, View } from 'react-native';
 import { ThemeColors } from './Themes';
-import { formatNumberWithCommas } from '../utils';
+import { Statistic } from './Statistic';
 
 export type ContentProps = {
-  covidData?: ByCountryResponse | TotalResponse;
+  covidData?: CovidResponse;
 }
 
-function renderCovidData(covidData: ByCountryResponse | TotalResponse) {
+function renderCovidData(covidData: CovidResponse) {
   switch (covidData.type) {
     case 'country':
       return (
         <>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>Country: </Text>
-            {covidData.country}
-          </Text>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>All Cases: </Text>
-            {formatNumberWithCommas(covidData.cases)}
-          </Text>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>New Cases: </Text>
-            {formatNumberWithCommas(covidData.todayCases)}
-          </Text>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>Active Cases: </Text>
-            {formatNumberWithCommas(covidData.active)}
-          </Text>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>Recoveries: </Text>
-            {formatNumberWithCommas(covidData.recovered)}
-          </Text>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>All Deaths: </Text>
-            {formatNumberWithCommas(covidData.deaths)}
-          </Text>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>New Deaths: </Text>
-            {formatNumberWithCommas(covidData.todayDeaths)}
-          </Text>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>Critical Cases: </Text>
-            {formatNumberWithCommas(covidData.critical)}
-          </Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{covidData.country}</Text>
+            <Image style={styles.flag} source={{ uri: covidData.countryInfo.flag }} />
+          </View>
+          <Statistic type="cases" cases={covidData.cases} recovered={covidData.recovered} deaths={covidData.deaths} />
+          <Statistic type="recovered" cases={covidData.cases} recovered={covidData.recovered} deaths={covidData.deaths} />
+          <Statistic type="deaths" cases={covidData.cases} recovered={covidData.recovered} deaths={covidData.deaths} />
         </>
       );
-    case 'total':
+    case 'global':
       return (
         <>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>Total Cases: </Text>
-            {formatNumberWithCommas(covidData.cases)}
+          <Text style={styles.titleContainer}>
+            <Text style={styles.title}>Global</Text>
           </Text>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>Total Deaths: </Text>
-            {formatNumberWithCommas(covidData.deaths)}
-          </Text>
-          <Text style={styles.textContainer}>
-            <Text style={styles.bold}>Total Recoveries: </Text>
-            {formatNumberWithCommas(covidData.recovered)}
-          </Text>
-          <Text style={styles.textContainer}>
+          <Statistic type="cases" cases={covidData.cases} recovered={covidData.recovered} deaths={covidData.deaths} />
+          <Statistic type="recovered" cases={covidData.cases} recovered={covidData.recovered} deaths={covidData.deaths} />
+          <Statistic type="deaths" cases={covidData.cases} recovered={covidData.recovered} deaths={covidData.deaths} />
+          <Text style={styles.titleContainer}>
             <Text style={styles.bold}>Last Updated: </Text>
-            {new Date(covidData.updated).toLocaleDateString()}
+            {new Date(covidData.updated).toLocaleString()}
           </Text>
         </>
       );
+    case 'error':
+      return <Text style={styles.error}>Country Not Found</Text>;
+    default:
+      return null;
   }
 }
 
@@ -81,10 +54,26 @@ export const CovidContent = (props: ContentProps) => {
 };
 
 const styles = StyleSheet.create({
-  textContainer: {
-    marginBottom: 10
+  titleContainer: {
+    marginBottom: 30,
+    flexDirection: 'row'
   },
   bold: {
     fontWeight: '700'
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: '700'
+  },
+  flag: {
+    width: 30,
+    height: 20,
+    marginLeft: 15,
+    marginTop: 10
+  },
+  error: {
+    fontWeight: '700',
+    fontSize: 30,
+    textAlign: 'center'
   }
 });

@@ -9,36 +9,44 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, NativeSyntheticEvent, TextInputChangeEventData, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { Header } from './Header';
 import { ColoredStatusBar } from './ColoredStatusBar';
 import { ThemeColors } from './Themes';
-import { coronaApi, ByCountryResponse, TotalResponse } from '../api';
+import { coronaApi, CovidResponse } from '../api';
 import { CovidContent } from './CovidContent';
 
 declare var global: { HermesInternal: null | {} };
+const DEBOUNCE_TIMEOUT = 700;
 
 export type AppState = {
-  covidData?: ByCountryResponse | TotalResponse,
+  covidData?: CovidResponse,
   search: string
 }
 
 export class App extends React.Component<{}, AppState> {
   state: AppState = { search: '' };
+  searchDebounce: any = null;
 
   componentDidMount() {
     coronaApi.getAllCases().then((covidData) => this.setState({ covidData }));
   }
 
-  handleChange = async (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
-    const { covidData } = this.state;
-    const search = event.nativeEvent.text;
-    if (covidData && search === '') {
-      const allCases = await coronaApi.getAllCases();
-      this.setState({ covidData: allCases });
-    }
-    this.setState({ search });
+  handleChange = async (search: string) => {
+    this.setState({ covidData: undefined });
+    clearTimeout(this.searchDebounce);
+    this.searchDebounce = setTimeout(async () => {
+      if (search === '') {
+        const covidData = await coronaApi.getAllCases();
+        this.setState({ covidData });
+      } else {
+        const covidData = await coronaApi.getCasesByCountry(search);
+        this.setState({ covidData });
+      }
+      this.setState({ search });
+      Keyboard.dismiss();
+    }, DEBOUNCE_TIMEOUT);
   }
 
   handleSearch = async () => {
@@ -55,7 +63,7 @@ export class App extends React.Component<{}, AppState> {
       <>
       	<ColoredStatusBar backgroundColor={ThemeColors.COVID} />
         <SafeAreaView >
-          <KeyboardAvoidingView behavior="position">
+          <KeyboardAvoidingView behavior="padding">
             <ScrollView
               contentInsetAdjustmentBehavior="automatic"
               style={styles.scrollView}
@@ -64,17 +72,19 @@ export class App extends React.Component<{}, AppState> {
             >
               <View style={styles.body}>
                 <Header />
-                <View style={styles.container}>
-                  <CovidContent covidData={covidData} />
+                <View style={styles.searchContainer}>
                   <TextInput
                     placeholderTextColor={ThemeColors.PLACEHOLDER_TEXT}
                     placeholder="Search country..."
                     style={styles.search}
-                    onChange={this.handleChange}
+                    onChangeText={this.handleChange}
                   />
-                  <TouchableOpacity style={styles.button} onPress={this.handleSearch}>
+                  {/* <TouchableOpacity style={styles.button} onPress={this.handleSearch}>
                     <Text style={styles.buttonText}>Search</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
+                </View>
+                <View style={styles.container}>
+                  <CovidContent covidData={covidData} />
                 </View>
               </View>
             </ScrollView>
@@ -120,10 +130,9 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 50,
-    width: 150,
+    width: 80,
     height: 50,
     alignSelf: 'center',
-    marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: ThemeColors.COVID
@@ -133,14 +142,22 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   container: {
-    margin: 50
+    margin: 50,
+    marginTop: 30
+  },
+  searchContainer: {
+    margin: 50,
+    marginTop: 15,
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   search: {
     borderWidth: 1,
     borderColor: ThemeColors.COVID,
     padding: 10,
     borderRadius: 50,
-    marginTop: 30,
-    color: 'black'
+    color: 'black',
+    width: '100%'
   }
 });
