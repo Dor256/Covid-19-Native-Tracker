@@ -50,7 +50,7 @@ export const coronaApi: CoronaApi = {
         .then((data) => { return { ...data, type: 'global' }; }));
   },
   getCasesByCountry(country: string) {
-    return fetch(`${BASE_URL}/countries/${country.toLowerCase().trim()}`)
+    return fetch(`${BASE_URL}/countries/${country.toLowerCase().trim()}?strict=true`)
       .then((response) => response.json()
         .then((data) => { return { ...data, type: 'country' }; }))
         .catch(() => { return { type: 'error' }; });
