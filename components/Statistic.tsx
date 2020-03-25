@@ -46,7 +46,6 @@ export const Statistic = (props: StatisticProps) => {
 
 const styles = StyleSheet.create({
   infoContainer: {
-    width: 200,
     marginBottom: 50
   },
   title: {
@@ -56,10 +55,10 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase'
   },
   info: {
-    marginLeft: 10,
     fontSize: 46,
     fontWeight: '700',
-    marginBottom: 5
+    marginBottom: 5,
+    alignSelf: 'center'
   },
   statisticsContainer: {
     padding: 3,
