@@ -7,6 +7,7 @@ export type StatisticType = 'cases' | 'recovered' | 'deaths';
 
 export type StatisticProps = {
   type: StatisticType,
+  pop: number,
   cases: number,
   recovered: number,
   deaths: number
@@ -21,7 +22,7 @@ const ThemeType: Record<StatisticType, ThemeColors> = {
 function renderStatistics(props: StatisticProps) {
   switch (props.type) {
     case 'cases':
-      return 'Some World Statistics';
+      return `${calculatePercent(props.pop, props.cases)}% of Population`;
     case 'recovered':
       return `${calculatePercent(props.cases, props.recovered)}% Recovery Rate`;
     case 'deaths':

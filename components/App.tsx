@@ -16,9 +16,9 @@ import { ColoredStatusBar } from './ColoredStatusBar';
 import { ThemeColors } from './Themes';
 import { coronaApi, CovidResponse } from '../api';
 import { CovidContent } from './CovidContent';
+import { DEBOUNCE_TIMEOUT } from '../consts';
 
 declare var global: { HermesInternal: null | {} };
-const DEBOUNCE_TIMEOUT = 700;
 
 export type AppState = {
   covidData?: CovidResponse,
