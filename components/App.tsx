@@ -15,6 +15,7 @@ import { ColoredStatusBar } from './ColoredStatusBar';
 import { ThemeColors } from './Themes';
 import { coronaApi, CovidResponse } from '../api';
 import { CovidContent } from './CovidContent';
+import { States } from '../us-states';
 
 declare var global: { HermesInternal: null | {} };
 
@@ -40,9 +41,16 @@ export class App extends React.Component<{}, AppState> {
   }
 
   handleSearch = async () => {
-    const { search } = this.state;
+    const search = this.state.search.toLowerCase().trim();
     this.setState({ covidData: undefined });
-    const covidData = search === '' ? await coronaApi.getAllCases() : await coronaApi.getCasesByCountry(search);
+    let covidData: CovidResponse;
+    if (States[search]) {
+      covidData = await coronaApi.getCasesByState(search);
+    } else if (search === '') {
+      covidData = await coronaApi.getAllCases();
+    } else {
+      covidData = await coronaApi.getCasesByCountry(search);
+    }
     this.setState({ covidData });
   }
 

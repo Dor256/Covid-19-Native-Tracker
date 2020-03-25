@@ -37,6 +37,16 @@ function renderCovidData(covidData: CovidResponse) {
           </Text>
         </>
       );
+    case 'state':
+      return (
+        <>
+          <Text style={styles.titleContainer}>
+          <Text style={styles.title}>{covidData.state}</Text>
+          </Text>
+          <Statistic usa type="cases" cases={covidData.cases} recovered={0} deaths={covidData.deaths} pop={covidData.population} />
+          <Statistic usa type="deaths" cases={covidData.cases} recovered={0} deaths={covidData.deaths} pop={covidData.population} />
+        </>
+      );
     case 'error':
       return <Text style={styles.error}>Country Not Found</Text>;
     default:

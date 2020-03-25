@@ -1,4 +1,5 @@
 import { WORLD_POP } from '../consts';
+import { States } from '../us-states';
 
 export type CountryInfo = {
   iso2: string,
@@ -34,11 +35,22 @@ type GlobalResponse = {
   updated: number
 };
 
+type ByStateResponse = {
+  type: 'state',
+  state: string,
+  cases: number,
+  todayCases: number,
+  deaths: number,
+  todayDeaths: number,
+  active: number,
+  population: number
+}
+
 type NotFound = {
   type: 'error'
 };
 
-export type CovidResponse = GlobalResponse | ByCountryResponse | NotFound;
+export type CovidResponse = GlobalResponse | ByCountryResponse | ByStateResponse | NotFound;
 
 export type PopulationResponse = [
   {
@@ -48,7 +60,8 @@ export type PopulationResponse = [
 
 export interface CoronaApi {
   getAllCases(): Promise<GlobalResponse>,
-  getCasesByCountry(country: string): Promise<ByCountryResponse>
+  getCasesByCountry(country: string): Promise<ByCountryResponse>,
+  getCasesByState(state: string): Promise<any>
 }
 
 export interface PopulationApi {
@@ -65,12 +78,25 @@ export const coronaApi: CoronaApi = {
         .then((data) => { return { ...data, type: 'global', population: WORLD_POP }; }));
   },
   getCasesByCountry(country: string) {
-    return populationApi.getPopulationByCountry(country).then((population) => {
-      return fetch(`${COVID_URL}/countries/${country.toLowerCase().trim()}?strict=true`)
+    return populationApi.getPopulationByCountry(country)
+    .then((population) => {
+      return fetch(`${COVID_URL}/countries/${country}?strict=true`)
       .then((response) => response.json()
-        .then((data) => { return { ...data, type: 'country', population }; }))
-        .catch(() => { return { type: 'error' }; });
-    });
+        .then((data) => { return { ...data, type: 'country', population }; }));
+    })
+    .catch(() => { return { type: 'error' }; });
+  },
+  getCasesByState(state: string) {
+    return populationApi.getPopulationByCountry('usa')
+      .then((population) => {
+        return fetch(`${COVID_URL}/states`)
+          .then((response) => response.json()
+            .then((data) => {
+              const stateData = data.find((element: any) => element.state === States[state]);
+              return { ...stateData, type: 'state', population };
+            }));
+      })
+      .catch(() => { return { type: 'error' }; });
   }
 };
 
