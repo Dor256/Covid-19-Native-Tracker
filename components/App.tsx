@@ -9,14 +9,13 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, TextInput, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, TextInput, KeyboardAvoidingView } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { Header } from './Header';
 import { ColoredStatusBar } from './ColoredStatusBar';
 import { ThemeColors } from './Themes';
 import { coronaApi, CovidResponse } from '../api';
 import { CovidContent } from './CovidContent';
-import { DEBOUNCE_TIMEOUT } from '../consts';
 
 declare var global: { HermesInternal: null | {} };
 
@@ -27,26 +26,18 @@ export type AppState = {
 
 export class App extends React.Component<{}, AppState> {
   state: AppState = { search: '' };
-  searchDebounce: any = null;
 
   componentDidMount() {
     coronaApi.getAllCases().then((covidData) => this.setState({ covidData }));
   }
 
   handleChange = async (search: string) => {
-    this.setState({ covidData: undefined });
-    clearTimeout(this.searchDebounce);
-    this.searchDebounce = setTimeout(async () => {
-      if (search === '') {
-        const covidData = await coronaApi.getAllCases();
-        this.setState({ covidData });
-      } else {
-        const covidData = await coronaApi.getCasesByCountry(search);
-        this.setState({ covidData });
-      }
-      this.setState({ search });
-      Keyboard.dismiss();
-    }, DEBOUNCE_TIMEOUT);
+    if (search === '') {
+      this.setState({ covidData: undefined });
+      const covidData = await coronaApi.getAllCases();
+      this.setState({ covidData });
+    }
+    this.setState({ search });
   }
 
   handleSearch = async () => {
@@ -54,7 +45,6 @@ export class App extends React.Component<{}, AppState> {
     this.setState({ covidData: undefined });
     const covidData = search === '' ? await coronaApi.getAllCases() : await coronaApi.getCasesByCountry(search);
     this.setState({ covidData });
-    Keyboard.dismiss();
   }
 
   render() {
@@ -78,6 +68,8 @@ export class App extends React.Component<{}, AppState> {
                     placeholder="Search country..."
                     style={styles.search}
                     onChangeText={this.handleChange}
+                    onSubmitEditing={this.handleSearch}
+                    returnKeyType="search"
                   />
                 </View>
                 <View style={styles.container}>
