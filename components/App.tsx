@@ -42,6 +42,7 @@ export class App extends React.Component<{}, AppState> {
 
   onSearch = async () => {
     const search = this.state.search.toLowerCase().trim();
+    this.setState({ covidData: undefined });
     let covidData: CovidResponse;
     if (States[search]) {
       covidData = await coronaApi.getCasesByState(search);
@@ -102,7 +103,8 @@ const styles = StyleSheet.create({
     backgroundColor: ThemeColors.COVID
   },
   body: {
-    backgroundColor: ThemeColors.LIGHTER
+    backgroundColor: ThemeColors.LIGHTER,
+    marginBottom: -1
   },
   container: {
     margin: 50,
