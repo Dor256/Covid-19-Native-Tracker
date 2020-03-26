@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, TextInput, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, TextInput, KeyboardAvoidingView, RefreshControl } from 'react-native';
 import { Header } from './Header';
 import { ColoredStatusBar } from './ColoredStatusBar';
 import { ThemeColors } from './Themes';
@@ -17,21 +17,21 @@ import { coronaApi, CovidResponse } from '../api';
 import { CovidContent } from './CovidContent';
 import { States } from '../us-states';
 
-declare var global: { HermesInternal: null | {} };
-
 export type AppState = {
   covidData?: CovidResponse,
-  search: string
+  search: string,
+  refreshing: boolean
 }
 
 export class App extends React.Component<{}, AppState> {
-  state: AppState = { search: '' };
+  state: AppState = { search: '', refreshing: false };
 
   componentDidMount() {
     coronaApi.getAllCases().then((covidData) => this.setState({ covidData }));
   }
 
-  handleChange = async (search: string) => {
+
+  onChange = async (search: string) => {
     if (search === '') {
       this.setState({ covidData: undefined });
       const covidData = await coronaApi.getAllCases();
@@ -40,9 +40,8 @@ export class App extends React.Component<{}, AppState> {
     this.setState({ search });
   }
 
-  handleSearch = async () => {
+  onSearch = async () => {
     const search = this.state.search.toLowerCase().trim();
-    this.setState({ covidData: undefined });
     let covidData: CovidResponse;
     if (States[search]) {
       covidData = await coronaApi.getCasesByState(search);
@@ -52,6 +51,12 @@ export class App extends React.Component<{}, AppState> {
       covidData = await coronaApi.getCasesByCountry(search);
     }
     this.setState({ covidData });
+  }
+
+  onRefresh = async () => {
+    this.setState({ refreshing: true });
+    await this.onSearch();
+    this.setState({ refreshing: false });
   }
 
   render() {
@@ -66,6 +71,7 @@ export class App extends React.Component<{}, AppState> {
               style={styles.scrollView}
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="interactive"
+              refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} tintColor={ThemeColors.LIGHT} />}
             >
               <View style={styles.body}>
                 <Header />
@@ -74,8 +80,8 @@ export class App extends React.Component<{}, AppState> {
                     placeholderTextColor={ThemeColors.PLACEHOLDER_TEXT}
                     placeholder="Search country..."
                     style={styles.search}
-                    onChangeText={this.handleChange}
-                    onSubmitEditing={this.handleSearch}
+                    onChangeText={this.onChange}
+                    onSubmitEditing={this.onSearch}
                     returnKeyType="search"
                   />
                 </View>
@@ -93,7 +99,7 @@ export class App extends React.Component<{}, AppState> {
 
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: ThemeColors.LIGHTER
+    backgroundColor: ThemeColors.COVID
   },
   body: {
     backgroundColor: ThemeColors.LIGHTER
