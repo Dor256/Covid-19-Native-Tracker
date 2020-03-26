@@ -60,7 +60,7 @@ export const CovidContent = (props: ContentProps) => {
   if (covidData) {
     return renderCovidData(covidData);
   }
-  return <ActivityIndicator size="large" color={ThemeColors.COVID} />;
+  return <ActivityIndicator style={styles.loader} size="large" color={ThemeColors.COVID} />;
 };
 
 const styles = StyleSheet.create({
@@ -81,9 +81,13 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 10
   },
+  loader: {
+    marginBottom: 50
+  },
   error: {
     fontWeight: '700',
     fontSize: 30,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginBottom: 50
   }
 });
