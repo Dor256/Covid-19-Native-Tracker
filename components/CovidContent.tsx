@@ -1,8 +1,8 @@
 import React from 'react';
-import { CovidResponse } from 'api';
 import { Text, ActivityIndicator, StyleSheet, Image, View } from 'react-native';
 import { ThemeColors } from './Themes';
 import { Statistic } from './Statistic';
+import { CovidResponse } from '../api';
 
 export type ContentProps = {
   covidData?: CovidResponse;
