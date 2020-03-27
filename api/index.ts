@@ -78,7 +78,7 @@ export const coronaApi: CoronaApi = {
         .then((data) => { return { ...data, type: 'global', population: WORLD_POP }; })).catch(() => { return { type: 'error' }; });
   },
   getCasesByCountry(country: string) {
-    return populationApi.getPopulationByCountry(country === SOUTH_KOREA ? SOUTH_KOREA_POP_SEARCH : country)
+    return populationApi.getPopulationByCountry(country)
       .then((population) => {
         return fetch(`${COVID_URL}/countries/${country}?strict=true`)
         .then((response) => response.json()
@@ -102,7 +102,8 @@ export const coronaApi: CoronaApi = {
 
 const populationApi: PopulationApi = {
   getPopulationByCountry(country: string) {
-    return fetch(`${POPULATION_URL}/name/${country}?fullText=true&fields=population`)
+    const countryToSearch = country === SOUTH_KOREA ? SOUTH_KOREA_POP_SEARCH : country;
+    return fetch(`${POPULATION_URL}/name/${countryToSearch}?fullText=true&fields=population`)
       .then((response) => response.json()
         .then((data) => data[0].population));
   }
