@@ -1,4 +1,4 @@
-import { WORLD_POP } from '../consts';
+import { WORLD_POP, SOUTH_KOREA, SOUTH_KOREA_POP_SEARCH } from '../consts';
 import { States } from '../us-states';
 
 export type CountryInfo = {
@@ -78,13 +78,13 @@ export const coronaApi: CoronaApi = {
         .then((data) => { return { ...data, type: 'global', population: WORLD_POP }; })).catch(() => { return { type: 'error' }; });
   },
   getCasesByCountry(country: string) {
-    return populationApi.getPopulationByCountry(country)
-    .then((population) => {
-      return fetch(`${COVID_URL}/countries/${country}?strict=true`)
-      .then((response) => response.json()
-        .then((data) => { return { ...data, type: 'country', population }; }));
-    })
-    .catch(() => { return { type: 'error' }; });
+    return populationApi.getPopulationByCountry(country === SOUTH_KOREA ? SOUTH_KOREA_POP_SEARCH : country)
+      .then((population) => {
+        return fetch(`${COVID_URL}/countries/${country}?strict=true`)
+        .then((response) => response.json()
+          .then((data) => { return { ...data, type: 'country', population }; }));
+      })
+      .catch(() => { return { type: 'error' }; });
   },
   getCasesByState(state: string) {
     return populationApi.getPopulationByCountry('usa')
