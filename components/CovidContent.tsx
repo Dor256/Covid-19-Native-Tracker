@@ -20,6 +20,10 @@ function renderCovidData(covidData: CovidResponse) {
           <Statistic type="cases" cases={covidData.cases} recovered={covidData.recovered} deaths={covidData.deaths} pop={covidData.population} />
           <Statistic type="recovered" cases={covidData.cases} recovered={covidData.recovered} deaths={covidData.deaths} pop={covidData.population} />
           <Statistic type="deaths" cases={covidData.cases} recovered={covidData.recovered} deaths={covidData.deaths} pop={covidData.population} />
+          <Text style={styles.titleContainer}>
+            <Text style={styles.bold}>Last Updated: </Text>
+            {new Date(covidData.updated).toLocaleString()}
+          </Text>
         </>
       );
     case 'global':

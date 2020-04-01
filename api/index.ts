@@ -23,7 +23,8 @@ type ByCountryResponse = {
   deaths: number,
   recovered: number,
   todayCases: number,
-  todayDeaths: number
+  todayDeaths: number,
+  updated: number
 };
 
 type GlobalResponse = {
@@ -82,7 +83,12 @@ export const coronaApi: CoronaApi = {
       .then((population) => {
         return fetch(`${COVID_URL}/countries/${country}?strict=true`)
         .then((response) => response.json()
-          .then((data) => { return { ...data, type: 'country', population }; }));
+          .then((data) => {
+            if (data.message) {
+              throw new Error('Country not found');
+            }
+            return { ...data, type: 'country', population };
+          }));
       })
       .catch(() => { return { type: 'error' }; });
   },
@@ -93,6 +99,9 @@ export const coronaApi: CoronaApi = {
           .then((response) => response.json()
             .then((data) => {
               const stateData = data.find((element: any) => element.state === States[state]);
+              if (!stateData) {
+                throw new Error('State not found');
+              }
               return { ...stateData, type: 'state', population };
             }));
       })
@@ -102,7 +111,7 @@ export const coronaApi: CoronaApi = {
 
 const populationApi: PopulationApi = {
   getPopulationByCountry(country: string) {
-    return fetch(`${POPULATION_URL}/name/${country}?fullText=true&fields=population`)
+    return fetch(`${POPULATION_URL}/name/${country}?fields=population`)
       .then((response) => response.json()
         .then((data) => data[0].population));
   }
