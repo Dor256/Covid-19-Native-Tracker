@@ -76,7 +76,8 @@ export const coronaApi: CoronaApi = {
   getAllCases() {
     return fetch(`${COVID_URL}/all`)
       .then((response) => response.json()
-        .then((data) => { return { ...data, type: 'global', population: WORLD_POP }; })).catch(() => { return { type: 'error' }; });
+        .then((data) => { return { ...data, type: 'global', population: WORLD_POP }; }))
+      .catch(() => { return { type: 'error' }; });
   },
   getCasesByCountry(country: string) {
     return populationApi.getPopulationByCountry(country)
